@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: report
+
+  cloud:
+    azure:
+      # 1. Blob Storage Passwordless Config
+      storage:
+        blob:
+          account-name: ${AZURE_STORAGE_ACCOUNT}
+          container-name: ${STORAGE_CONTAINER_NAME}
+
+      # 2. Event Hubs Passwordless Config
+      eventhubs:
+        namespace: ${AZURE_EVENTHUBS_NAMESPACE}
+        event-hub-name: ${AZURE_EVENTHUBS_NAME}
