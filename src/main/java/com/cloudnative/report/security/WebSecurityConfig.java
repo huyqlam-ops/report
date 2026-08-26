@@ -23,7 +23,7 @@ public class WebSecurityConfig {
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/data/**").hasRole(ADMIN)
+                        .requestMatchers("/data/**").hasAuthority(ADMIN)
                         .anyRequest().permitAll()
                 );
         return http.build();
