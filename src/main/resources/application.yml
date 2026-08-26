@@ -14,3 +14,23 @@ spring:
       eventhubs:
         namespace: ${AZURE_EVENTHUBS_NAMESPACE}
         event-hub-name: ${AZURE_EVENTHUBS_NAME}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus, health
+  endpoint:
+    prometheus:
+      access: unrestricted
+  metrics:
+    tags:
+      application: ${spring.application.name}
+
+logging:
+  file:
+    name: ${LOG_FILE_PATH:./logs/dataingest.log}
+
+admin:
+  user:
+    password: ${ADMIN_USER_PASSWORD:report-admin-password}
