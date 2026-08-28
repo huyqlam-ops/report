@@ -71,6 +71,16 @@ jobs:
           echo "Release tag: $TAG"
           echo "version=$TAG" >> "$GITHUB_OUTPUT"
 
+      - name: Write version file
+        run: echo "${{ steps.version.outputs.version }}" > version.txt
+
+      - name: Upload version artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-version
+          path: version.txt
+          retention-days: 7
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
@@ -117,41 +127,3 @@ jobs:
             ${{ env.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
-
-  # ---------- 4. DEPLOY lên Azure Container Apps ----------
-  deploy:
-    name: Deploy to Azure Container Apps
-    needs:
-      - create-release   # cần để lấy output version
-      - push-image        # phải đợi image được push xong
-    runs-on: ubuntu-latest
-
-    environment:
-      name: dev
-      url: ${{ steps.deploy.outputs.fqdn }}
-
-    steps:
-      - name: Azure Login (OIDC)
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-
-      - name: Deploy new revision to Azure Container Apps
-        id: deploy
-        run: |
-          az containerapp update \
-            --name ${{ secrets.CONTAINER_APP_NAME }} \
-            --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
-            --container-name ${{ env.CONTAINER_NAME }} \
-            --image ${{ env.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ needs.create-release.outputs.version }}
-          
-          FQDN=$(az containerapp show \
-            --name ${{ secrets.CONTAINER_APP_NAME }} \
-            --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
-            --query properties.configuration.ingress.fqdn -o tsv)
-          echo "fqdn=$FQDN" >> "$GITHUB_OUTPUT"
-
-      - name: Print deployed version
-        run: echo "Đã deploy image ${{ env.IMAGE_NAME }}:${{ needs.create-release.outputs.version }} lên Azure Container Apps"
