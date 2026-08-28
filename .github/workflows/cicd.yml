@@ -1,4 +1,4 @@
-name: CI/CD - Build, Test, Release & Deploy
+name: CI/CD - Build, Test, Release & Push Image
 
 on:
   push:
