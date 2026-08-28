@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @Component
 public class RequestLoggingAspect {
 
-    @Around("@annotation(AudiLog)")
+    @Around("@within(AudiLog) || @annotation(AudiLog)")
     public Object auditLog(ProceedingJoinPoint joinPoint) throws Throwable {
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
 
