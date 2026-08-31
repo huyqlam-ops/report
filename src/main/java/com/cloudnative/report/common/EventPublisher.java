@@ -19,12 +19,10 @@ public class EventPublisher {
         EventData eventData = new EventData(jsonPayload);
 
         if (!eventDataBatch.tryAdd(eventData)) {
-            // Event quá lớn để nhét vào 1 batch rỗng -> lỗi thật sự
             throw new IllegalArgumentException("Event is too large for an empty batch. Max size: "
                     + eventDataBatch.getMaxSizeInBytes());
         }
 
-        // Luôn luôn gửi sau khi add thành công
         producer.send(eventDataBatch);
         log.info("Successfully published event to Event Hub: {}", jsonPayload);
     }

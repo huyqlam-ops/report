@@ -1,6 +1,7 @@
 package com.cloudnative.report.data.web;
 
 import com.cloudnative.report.common.AudiLog;
+import com.cloudnative.report.data.dto.BatchDataRequest;
 import com.cloudnative.report.data.dto.DataRequest;
 import com.cloudnative.report.data.dto.DataResponse;
 import com.cloudnative.report.data.service.DataService;
@@ -23,6 +24,12 @@ public class DataController {
     @Secured(ADMIN)
     public void uploadData(@RequestBody @Valid DataRequest request) {
         dataService.processData(request.getKey(), request.getData());
+    }
+
+    @PostMapping("/data/batch")
+    @Secured(ADMIN)
+    public void uploadBatchData(@RequestBody @Valid BatchDataRequest request) {
+        dataService.batchProcessData(request);
     }
 
     @GetMapping("/data/{id}")
