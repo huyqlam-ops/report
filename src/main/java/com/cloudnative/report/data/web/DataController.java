@@ -32,6 +32,11 @@ public class DataController {
         dataService.batchProcessData(request);
     }
 
+    @GetMapping("/debug/throw-500")
+    public void throwError() {
+        throw new RuntimeException("Test 500 for alert - remove after testing");
+    }
+
     @GetMapping("/data/{id}")
     @ResponseStatus(HttpStatus.OK)
     public DataResponse getData(@PathVariable(name = "id") String key) {
